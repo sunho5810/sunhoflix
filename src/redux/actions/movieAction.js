@@ -2,6 +2,7 @@ import api from "../api";
 
 function getMovies (){
 
+    //env 설정 후 반드시 서버 재시작 해줘야됨
     const API_KEY = process.env.REACT_APP_API_KEY;
 
     return async(dispatch, getState) => {
