@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Badge, Button, Col, Container, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -14,6 +14,8 @@ import MovieCard from '../component/MovieCard';
 
 const MovieDetail = () => {
 
+  const [tabName, setTabName] = useState("review");
+
   const {detail, review, related, loading} = useSelector((state) => state.detail);
 
   // console.log("detail.genres??", detail.genres);
@@ -23,6 +25,10 @@ const MovieDetail = () => {
   const {id} = useParams();
 
   const dispatch = useDispatch();
+
+  const detailTab = (btnName) => {
+    setTabName(btnName);
+  }
 
   useEffect(() => {
       dispatch(movieDetailAction.getMovieDetail(id));
@@ -71,26 +77,34 @@ const MovieDetail = () => {
           <Col>
               <div>
                 <div>
-                  <Button variant='light'>RIVIEWS ({review.results.length})</Button>
-                  <Button variant='light'>RELATED MOVIES (20)</Button>
+                  <Button variant='light' onClick={() => detailTab("review")}>REVIEWS ({review.results.length})</Button>
+                  <Button variant='light' onClick={() => detailTab("related")}>RELATED MOVIES ({related.results.length})</Button>
                 </div>
-                {/* <div>
-                  {
-                    review.results.map((item) => (
-                      <div key={item.id}>
-                        <h4>{item.author}</h4>
-                        <p>{item.content}</p>
-                      </div>
-                    ))
-                  }
-                </div> */}
-                <div className='relatedList'>
+
                 {
-                    related.results.map((item) => (
-                      <MovieCard className='relatedList-item' key={item.id} item={item}/>
-                    ))
-                  }
-                </div>
+                  tabName === "review" ? (
+                    <div>
+                      {
+                        review.results.map((item) => (
+                          <div key={item.id}>
+                            <h4>{item.author}</h4>
+                            <p>{item.content}</p>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  ) : (
+                    <div className='relatedList'>
+                      {
+                        related.results.map((item) => (
+                          <MovieCard className='relatedList-item' key={item.id} item={item}/>
+                        ))
+                      }
+                    </div>
+                  )
+                }
+
+                
                 
               </div>        
           </Col>
